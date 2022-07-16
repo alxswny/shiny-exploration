@@ -4,16 +4,21 @@ library(ggplot2)
 
 # Define UI
 ui <- fluidPage(
-  textInput('name', 'Enter Name', 'David'),
-  # CODE BELOW: Display the plot output named 'trend'
-  plotOutput('trend')
+  titlePanel("Baby Name Explorer"),
+  sidebarLayout(
+    sidebarPanel(textInput('name', 'Enter Name', 'David')),
+    mainPanel(plotOutput('trend'))
+  )
 )
+
+# Define server
 server <- function(input, output, session) {
-  # CODE BELOW: Render an empty plot and assign to output named 'trend'
   output$trend <- renderPlot({
-    ggplot()
+    # CODE BELOW: Update to display a line plot of the input name
+    ggplot(subset(babynames, name == input$name)) + 
+      geom_line(aes(x = year, y = prop, color = sex))
   })
-  
-  
 }
+
+# Render app
 shinyApp(ui = ui, server = server)
